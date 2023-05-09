@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
 
-namespace TextBasedGame
 {
-    static class Battle
+    
+}
+    class Battle
     {
         public static void StartBattle(Game game)
         {
@@ -108,4 +109,4 @@ namespace TextBasedGame
             }
         }
     }
-}
+
