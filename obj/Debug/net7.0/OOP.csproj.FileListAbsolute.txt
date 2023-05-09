@@ -1,0 +1,5 @@
+C:\Users\mrfir\Documents\GitHub\OOP\obj\Debug\net7.0\OOP.csproj.AssemblyReference.cache
+C:\Users\mrfir\Documents\GitHub\OOP\obj\Debug\net7.0\OOP.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\mrfir\Documents\GitHub\OOP\obj\Debug\net7.0\OOP.AssemblyInfoInputs.cache
+C:\Users\mrfir\Documents\GitHub\OOP\obj\Debug\net7.0\OOP.AssemblyInfo.cs
+C:\Users\mrfir\Documents\GitHub\OOP\obj\Debug\net7.0\OOP.csproj.CoreCompileInputs.cache
