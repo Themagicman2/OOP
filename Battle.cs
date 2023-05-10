@@ -1,24 +1,23 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 
+namespace OOP
 {
-    
-}
     class Battle
     {
-        public static void StartBattle(Game game)
-        {
-            Console.Clear();
-            Console.WriteLine("Round " + game.CurrentRound);
-            Console.WriteLine(game.Player.Name + " vs Enemies");
+public static void StartBattle(Game game)
+{
+    Console.Clear();
+    Console.WriteLine("Round " + game.CurrentRound);
+    Console.WriteLine(game.Player.Name + " vs Enemies");
 
-            // Initialize enemies for the current round
-            game.Enemies = new List<Enemy>();
-            game.Enemies.Add(new Enemy("Enemy 1"));
-            game.Enemies.Add(new Enemy("Enemy 2"));
+    // Initialize enemies for the current round
+    game.Enemies.Add(new Enemy("Enemy 1", 30, 20, 5));
+    game.Enemies.Add(new Enemy("Enemy 2", 20, 30, 10));
 
-            while (game.Player.IsAlive && game.Enemies.Count > 0)
-            {
+    while (game.Player.IsAlive && game.Enemies.Count > 0)
+    {
                 bool enemyAttacked = false;
 
                 Console.WriteLine();
@@ -34,10 +33,10 @@ using System.Collections.Generic;
 
                     for (int i = game.Enemies.Count - 1; i >= 0; i--)
                     {
-                        if (game.Enemies[i].IsDefeated)
+                        if (!game.Enemies[i].IsAlive)
                         {
                             Console.WriteLine("You defeated " + game.Enemies[i].Name + "!");
-                            game.Player.Score += 10;
+                            game.Player.IncreaseScore(10);
                             game.Enemies.RemoveAt(i);
                         }
                     }
@@ -49,7 +48,7 @@ using System.Collections.Generic;
 
                 foreach (Enemy enemy in game.Enemies)
                 {
-                    if (enemy.IsDefeated)
+                    if (!enemy.IsAlive)
                     {
                         continue;
                     }
@@ -64,10 +63,10 @@ using System.Collections.Generic;
                     Console.WriteLine("Enemies cannot attack at the moment.");
                 }
 
-                if (game.Player.IsAlive && game.Enemies.Count == 0)
-                {
+                 if (game.Player.IsAlive && game.Enemies.Count == 0)
+        {
                     Console.WriteLine("Congratulations! You have defeated all enemies in round " + game.CurrentRound);
-                    game.CurrentRound++;
+                    game.CurrentRound++; // Access CurrentRound using the 'game' object
 
                     Console.WriteLine();
                     Console.WriteLine("What would you like to do?");
@@ -110,3 +109,193 @@ using System.Collections.Generic;
         }
     }
 
+    enum GameState
+{
+    MainMenu,
+    Battle,
+    City,
+    Dead
+}
+
+    class Game
+    {
+        private bool isScoreSaved; // New flag to track if the score has been saved
+        public GameState GameState { get; set; }
+        public static Player Player { get; set; }
+        public List<Enemy> Enemies { get; set; }
+        public int CurrentRound { get; set; }
+
+        public Game()
+        {
+            isScoreSaved = false; // Initialize the flag
+            GameState = GameState.MainMenu;
+            Player = null;
+            Enemies = new List<Enemy>();
+            CurrentRound = 1;
+        }
+    private void VisitCity()
+    {
+        City.VisitCity(this);
+    }
+        public void Run()
+        {
+            while (true)
+            {
+                switch (GameState)
+                {
+                   
+                    case GameState.MainMenu:
+                        DisplayMainMenu();
+                        break;
+                    case GameState.Battle:
+                        Battle.StartBattle(this);
+                        break;
+                    case GameState.City:
+                        City.VisitCity();
+                        break;
+                    case GameState.Dead:
+                        if (!isScoreSaved) // Check if the score has already been saved
+                        {
+                            GameOver();
+                            isScoreSaved = true; // Set the flag to indicate that the score has been saved
+                        }
+                        break;
+                }
+
+                // Check game state to exit the loop
+                if (GameState == GameState.MainMenu)
+                {
+                    break;
+                }
+            }
+        }
+
+        private static void DisplayMainMenu()
+        {
+            Console.Clear();
+            Console.WriteLine("Welcome to the Text-Based Game!");
+            Console.WriteLine("1. Start New Game");
+            Console.WriteLine("2. Load Game");
+            Console.WriteLine("3. Quit");
+
+            int choice = GetNumericInput(1, 3);
+
+            if (choice == 1)
+            {
+                NewGame();
+                GameState = GameState.Battle;
+            }
+            else if (choice == 2)
+            {
+                LoadGame();
+                GameState = GameState.City;
+            }
+            else
+            {
+                Environment.Exit(0);
+            }
+        }
+
+private static void NewGame()
+{
+    Console.Clear();
+    Console.WriteLine("Enter your name: ");
+    string playerName = Console.ReadLine();
+    Game.Player = new Player(playerName);
+
+    Game.CurrentRound = 1;
+}
+
+private static void VisitCity()
+{
+    Console.Clear();
+    Console.WriteLine("Welcome to the City!");
+    Console.WriteLine("1. Rest and Recover Health");
+    Console.WriteLine("2. Save and Quit");
+
+    int choice = GetNumericInput(1, 2);
+
+    if (choice == 1)
+    {
+        Game.Player.Rest();
+        Game.GameState = GameState.Battle;
+    }
+    else
+    {
+        SaveGame();
+        Game.GameState = GameState.MainMenu;
+    }
+}
+
+        private static void GameOver()
+        {
+            Console.Clear();
+            Console.WriteLine("Game Over!");
+            Console.WriteLine("Your final score: " + Player.Score);
+
+            Console.WriteLine();
+            Console.WriteLine("1. Save and Quit");
+            Console.WriteLine("2. Quit without saving");
+
+            int choice = GetNumericInput(1, 2);
+
+            if (choice == 1)
+            {
+                SaveGame();
+            }
+
+            Environment.Exit(0);
+        }
+
+public static void SaveGame()
+{
+    string saveData = Player.Name + "," + Player.Score;
+    File.WriteAllText("save.txt", saveData);
+    Console.WriteLine("Game saved successfully!");
+}
+
+
+        private static void LoadGame()
+        {
+            if (File.Exists("save.txt"))
+            {
+                string saveData = File.ReadAllText("save.txt");
+                string[] values = saveData.Split(',');
+
+                if (values.Length == 2)
+                {
+                    string playerName = values[0];
+                    int score;
+
+                    if (int.TryParse(values[1], out score))
+                    {
+                        Player = new Player(playerName);
+                        Player.Score = score;
+                        Console.WriteLine("Game loaded successfully!");
+                    }
+                }
+            }
+            else
+            {
+                Console.WriteLine("No saved game found.");
+            }
+        }
+
+        private static int GetNumericInput(int minValue, int maxValue)
+        {
+            int input;
+            while (true)
+            {
+                Console.Write("Enter your choice: ");
+                if (int.TryParse(Console.ReadLine(), out input))
+                {
+                    if (input >= minValue && input <= maxValue)
+                    {
+                        return input;
+                    }
+                }
+                Console.WriteLine("Invalid input. Please try again.");
+            }
+        }
+    }
+}

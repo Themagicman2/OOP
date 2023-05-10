@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace TextBasedGame
+namespace OOP
 {
-    class Main
+    class Program
     {
         static void Main(string[] args)
         {

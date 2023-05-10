@@ -1,9 +1,12 @@
 using System;
+using System.IO;
 
-namespace TextBasedGame
+
+namespace OOP
 {
     static class City
     {
+        
         public static void VisitCity(Game game)
         {
             Console.Clear();
@@ -30,6 +33,11 @@ namespace TextBasedGame
                     game.GameState = GameState.MainMenu;
                     break;
             }
+        }
+
+        internal static void VisitCity()
+        {
+            throw new NotImplementedException();
         }
 
         private static int GetNumericInput(int minValue, int maxValue)
