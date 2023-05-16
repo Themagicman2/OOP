@@ -6,18 +6,18 @@ namespace OOP
 {
     class Battle
     {
-public static void StartBattle(Game game)
-{
-    Console.Clear();
-    Console.WriteLine("Round " + game.CurrentRound);
-    Console.WriteLine(game.Player.Name + " vs Enemies");
+        public static void StartBattle(Game game)
+        {
+            Console.Clear();
+            Console.WriteLine("Round " + game.CurrentRound);
+            Console.WriteLine(game.Player.Name + " vs Enemies");
 
-    // Initialize enemies for the current round
-    game.Enemies.Add(new Enemy("Enemy 1", 30, 20, 5));
-    game.Enemies.Add(new Enemy("Enemy 2", 20, 30, 10));
+            // Initialize enemies for the current round
+            game.Enemies.Add(new Enemy("Enemy 1", 30, 20, 5));
+            game.Enemies.Add(new Enemy("Enemy 2", 20, 30, 10));
 
-    while (game.Player.IsAlive && game.Enemies.Count > 0)
-    {
+            while (game.Player.IsAlive && game.Enemies.Count > 0)
+            {
                 bool enemyAttacked = false;
 
                 Console.WriteLine();
@@ -63,8 +63,8 @@ public static void StartBattle(Game game)
                     Console.WriteLine("Enemies cannot attack at the moment.");
                 }
 
-                 if (game.Player.IsAlive && game.Enemies.Count == 0)
-        {
+                if (game.Player.IsAlive && game.Enemies.Count == 0)
+                {
                     Console.WriteLine("Congratulations! You have defeated all enemies in round " + game.CurrentRound);
                     game.CurrentRound++; // Access CurrentRound using the 'game' object
 
@@ -110,40 +110,41 @@ public static void StartBattle(Game game)
     }
 
     enum GameState
-{
-    MainMenu,
-    Battle,
-    City,
-    Dead
-}
+    {
+        MainMenu,
+        Battle,
+        City,
+        Dead
+    }
 
     class Game
     {
-        private bool isScoreSaved; // New flag to track if the score has been saved
-        public GameState GameState { get; set; }
-        public static Player Player { get; set; }
-        public List<Enemy> Enemies { get; set; }
-        public int CurrentRound { get; set; }
+        private bool isScoreSaved; // Updated: Changed naming convention to camelCase
+        public GameState GameState { get; set; } // Updated: Changed naming convention to PascalCase
+        public Player Player { get; set; } // Updated: Changed naming convention to PascalCase
+        public List<Enemy> Enemies { get; set; } // Updated: Changed naming convention to PascalCase
+        public int CurrentRound { get; set; } // Updated: Changed naming convention to PascalCase
 
         public Game()
         {
-            isScoreSaved = false; // Initialize the flag
+            isScoreSaved = false; 
             GameState = GameState.MainMenu;
             Player = null;
             Enemies = new List<Enemy>();
             CurrentRound = 1;
         }
-    private void VisitCity()
-    {
-        City.VisitCity(this);
-    }
+
+        private void VisitCity()
+        {
+            City.VisitCity(this);
+        }
+
         public void Run()
         {
             while (true)
             {
                 switch (GameState)
                 {
-                   
                     case GameState.MainMenu:
                         DisplayMainMenu();
                         break;
@@ -151,7 +152,7 @@ public static void StartBattle(Game game)
                         Battle.StartBattle(this);
                         break;
                     case GameState.City:
-                        City.VisitCity();
+                        VisitCity();
                         break;
                     case GameState.Dead:
                         if (!isScoreSaved) // Check if the score has already been saved
@@ -196,36 +197,15 @@ public static void StartBattle(Game game)
             }
         }
 
-private static void NewGame()
-{
-    Console.Clear();
-    Console.WriteLine("Enter your name: ");
-    string playerName = Console.ReadLine();
-    Game.Player = new Player(playerName);
+        private static void NewGame()
+        {
+            Console.Clear();
+            Console.WriteLine("Enter your name: ");
+            string playerName = Console.ReadLine();
+            Player = new Player(playerName);
 
-    Game.CurrentRound = 1;
-}
-
-private static void VisitCity()
-{
-    Console.Clear();
-    Console.WriteLine("Welcome to the City!");
-    Console.WriteLine("1. Rest and Recover Health");
-    Console.WriteLine("2. Save and Quit");
-
-    int choice = GetNumericInput(1, 2);
-
-    if (choice == 1)
-    {
-        Game.Player.Rest();
-        Game.GameState = GameState.Battle;
-    }
-    else
-    {
-        SaveGame();
-        Game.GameState = GameState.MainMenu;
-    }
-}
+            CurrentRound = 1;
+        }
 
         private static void GameOver()
         {
@@ -247,13 +227,12 @@ private static void VisitCity()
             Environment.Exit(0);
         }
 
-public static void SaveGame()
-{
-    string saveData = Player.Name + "," + Player.Score;
-    File.WriteAllText("save.txt", saveData);
-    Console.WriteLine("Game saved successfully!");
-}
-
+        public static void SaveGame()
+        {
+            string saveData = Player.Name + "," + Player.Score;
+            File.WriteAllText("save.txt", saveData);
+            Console.WriteLine("Game saved successfully!");
+        }
 
         private static void LoadGame()
         {

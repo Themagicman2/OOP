@@ -12,6 +12,15 @@ namespace OOP
         public int Defense { get; private set; }
         public bool IsAlive { get; private set; }
         public int Score { get; set; }
+        public void DisplayStats()
+    {
+        Console.WriteLine("Player Name: " + Name);
+        Console.WriteLine("Health: " + Health);
+        Console.WriteLine("Attack: " + AttackPower);
+        Console.WriteLine("Defense: " + DefensePower);
+        Console.WriteLine("Score: " + Score);
+    }
+}
 
         public Player(string name)
         {
